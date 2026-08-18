@@ -1,0 +1,413 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f6f7fb">
+  <title>CanvasFlow</title>
+
+  <link rel="stylesheet" href="styles/main.css">
+  <link rel="stylesheet" href="styles/themes.css">
+  <link rel="stylesheet" href="styles/responsive.css">
+  <link rel="stylesheet" href="styles/animations.css">
+<style>
+.hub-header{height:64px;background:#fff;border-bottom:1px solid #e5e8ef;display:flex;align-items:center;padding:0 28px;gap:28px;position:sticky;top:0;z-index:20}.hub-nav{display:flex;gap:3px;overflow:auto}.hub-tab{border:0;background:transparent;padding:9px 12px;border-radius:9px;color:#68748a;white-space:nowrap;cursor:pointer}.hub-tab.active,.hub-tab:hover{background:#efedff;color:#5546d9}.hub-inner{max-width:1120px;margin:auto;padding:48px 24px 75px}.hub-hero{text-align:center;margin-bottom:42px}.hub-hero h1{font-size:clamp(35px,5vw,52px);letter-spacing:-.055em;margin:0 0 10px}.hub-search{display:flex;align-items:center;gap:9px;max-width:560px;margin:22px auto 0;background:#fff;border:1px solid #dfe3ea;border-radius:12px;padding:0 14px;font-size:23px;color:#8792a4;box-shadow:0 5px 22px #1720330a}.hub-search input{border:0;outline:0;background:transparent;width:100%;padding:14px 0;font-size:15px}.hub-category{margin-bottom:42px}.hub-title{display:flex;gap:12px;align-items:baseline;margin-bottom:14px}.hub-title h2{font-size:21px;margin:0}.hub-title span{font-size:13px;color:#8994a6}.hub-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}.hub-card{min-height:138px;background:#fff;border:1px solid #e0e4eb;border-radius:14px;padding:16px;text-align:left;display:flex;flex-direction:column;gap:5px;cursor:pointer;transition:.16s;box-shadow:0 3px 14px #17203306}.hub-card:hover{transform:translateY(-2px);border-color:#cfc9ff;box-shadow:0 12px 28px #17203312}.hub-card b{font-size:24px;color:#5b4de8}.hub-card strong{font-size:14px;color:#202b3e}.hub-card small{font-size:12px;line-height:1.35;color:#7b8799}.hub-bottom{display:flex;justify-content:center;gap:10px}.hub-category.filtered-out,.hub-card.filtered-out{display:none}.tool-modal{position:fixed;inset:0;background:#17203345;display:grid;place-items:center;padding:18px;z-index:100}.tool-modal[hidden]{display:none!important}.tool-dialog{position:relative;width:min(650px,100%);max-height:90vh;overflow:auto;background:#fff;border-radius:18px;padding:30px;box-shadow:0 25px 70px #17203335}.tool-close{position:absolute;right:14px;top:14px;border:0;background:#f2f4f7;border-radius:50%;width:34px;height:34px;font-size:22px;cursor:pointer}.tool-dialog h2{font-size:30px;letter-spacing:-.04em;margin:4px 0}.tool-description{color:#758196}.drop-zone{border:2px dashed #cfd5df;border-radius:14px;padding:38px 18px;text-align:center;background:#fafbfc;margin:20px 0;cursor:pointer}.drop-zone.drag{border-color:#5b4de8;background:#f4f2ff}.tool-files{display:grid;gap:8px;margin:12px 0}.tool-file{display:flex;justify-content:space-between;gap:12px;padding:10px 12px;background:#f6f7f9;border-radius:9px;font-size:13px}.tool-row{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin:13px 0}.tool-row label{font-size:13px;color:#657187}.tool-row select,.tool-row input{padding:9px;border:1px solid #dfe3ea;border-radius:8px;background:#fff}.tool-primary{border:0;border-radius:9px;background:#5b4de8;color:#fff;padding:11px 17px;cursor:pointer}.tool-note{font-size:12px;color:#8a95a6;margin-top:10px}.tool-result{padding:13px;background:#f1faee;border:1px solid #cfe9c9;border-radius:10px;margin-top:15px}.tool-download{display:inline-block;margin-top:9px;color:#5143d8;font-weight:700;text-decoration:none}
+@media(max-width:850px){.hub-header{padding:0 14px}.hub-grid{grid-template-columns:repeat(2,1fr)}}@media(max-width:500px){.hub-header{height:auto;min-height:60px;flex-wrap:wrap;padding:9px}.hub-nav{order:3;width:100%}.hub-inner{padding:35px 14px 65px}.hub-grid{grid-template-columns:1fr 1fr;gap:9px}.hub-card{min-height:130px;padding:14px}.hub-title{display:block}.hub-title span{display:block;margin-top:3px}.tool-dialog{padding:24px 18px}}
+</style></head>
+<body>
+  <section id="welcomeScreen" class="welcome-screen">
+  <header class="hub-header">
+    <a class="brand" href="#" aria-label="CanvasFlow home">Canvas<span>Flow</span></a>
+    <nav class="hub-nav">
+      <button class="hub-tab active" data-filter="all">All tools</button>
+      <button class="hub-tab" data-filter="pdf">PDF</button>
+      <button class="hub-tab" data-filter="image">Images</button>
+      <button class="hub-tab" data-filter="document">Documents</button>
+      <button class="hub-tab" data-filter="create">Create</button>
+    </nav>
+  </header>
+
+  <div class="hub-inner">
+    <div class="hub-hero">
+      <p class="eyebrow">Everyday file & design tools</p>
+      <h1>What do you want to do?</h1>
+      <p class="welcome-copy">Pick a tool. Upload your file. Get the result.</p>
+      <label class="hub-search">⌕ <input id="toolSearch" placeholder="Search any tool…"></label>
+    </div>
+
+    <div class="hub-category" data-category="pdf">
+      <div class="hub-title"><h2>PDF & Documents</h2><span>Common document tasks</span></div>
+      <div class="hub-grid">
+        <button class="hub-card" data-tool="merge-pdf"><b>⇢</b><strong>Merge PDF</strong><small>Combine files into one PDF</small></button>
+        <button class="hub-card" data-tool="split-pdf"><b>÷</b><strong>Split PDF</strong><small>Separate pages into files</small></button>
+        <button class="hub-card" data-tool="compress-pdf"><b>◉</b><strong>Compress PDF</strong><small>Reduce file size</small></button>
+        <button class="hub-card" data-tool="pdf-images"><b>▧</b><strong>PDF to Images</strong><small>Convert pages to images</small></button>
+        <button class="hub-card" data-tool="images-pdf"><b>PDF</b><strong>Images to PDF</strong><small>Make a PDF from photos</small></button>
+        <button class="hub-card" data-tool="ocr"><b>A</b><strong>OCR</strong><small>Extract text from scans</small></button>
+        <button class="hub-card" data-tool="sign-pdf"><b>✎</b><strong>Sign PDF</strong><small>Add a signature</small></button>
+        <button class="hub-card" data-tool="protect-pdf"><b>▣</b><strong>Protect PDF</strong><small>Add a password</small></button>
+        <button class="hub-card" data-tool="rotate-pdf"><b>↻</b><strong>Rotate PDF</strong><small>Fix page orientation</small></button>
+        <button class="hub-card" data-tool="extract-pdf"><b>⇩</b><strong>Extract pages</strong><small>Save selected pages</small></button>
+        <button class="hub-card" data-tool="watermark-pdf"><b>◈</b><strong>Watermark PDF</strong><small>Add text or an image</small></button>
+        <button class="hub-card" data-tool="pdf-to-word"><b>W</b><strong>PDF to Word</strong><small>Convert to editable text</small></button>
+      </div>
+    </div>
+
+    <div class="hub-category" data-category="image">
+      <div class="hub-title"><h2>Images</h2><span>All common image workflows</span></div>
+      <div class="hub-grid">
+        <button class="hub-card" data-tool="image-converter"><b>⇄</b><strong>Image Converter</strong><small>Convert between image formats</small></button>
+        <button class="hub-card" data-tool="compress-image"><b>◉</b><strong>Compress Image</strong><small>Reduce image size</small></button>
+        <button class="hub-card" data-tool="resize-image"><b>↔</b><strong>Resize Image</strong><small>Change width and height</small></button>
+        <button class="hub-card" data-tool="crop-image"><b>⌗</b><strong>Crop Image</strong><small>Cut to the right frame</small></button>
+        <button class="hub-card" data-tool="rotate-image"><b>↻</b><strong>Rotate Image</strong><small>Turn an image</small></button>
+        <button class="hub-card" data-tool="flip-image"><b>⇋</b><strong>Flip Image</strong><small>Mirror an image</small></button>
+        <button class="hub-card" data-tool="remove-bg"><b>✦</b><strong>Remove Background</strong><small>Make the subject stand out</small></button>
+        <button class="hub-card" data-tool="watermark-image"><b>◈</b><strong>Watermark Image</strong><small>Add text or a logo</small></button>
+        <button class="hub-card" data-tool="grayscale"><b>◐</b><strong>Grayscale</strong><small>Black and white</small></button>
+        <button class="hub-card" data-tool="blur-image"><b>◒</b><strong>Blur Image</strong><small>Soften an image</small></button>
+        <button class="hub-card" data-tool="metadata"><b>ⓘ</b><strong>Image Information</strong><small>View size and file details</small></button>
+        <button class="hub-card" data-tool="image-pdf"><b>PDF</b><strong>Image to PDF</strong><small>Create a PDF from images</small></button>
+      </div>
+    </div>
+
+    <div class="hub-category" data-category="document">
+      <div class="hub-title"><h2>Documents</h2><span>Useful conversion tools</span></div>
+      <div class="hub-grid">
+        <button class="hub-card" data-tool="word-pdf"><b>W</b><strong>Word to PDF</strong><small>Convert DOC and DOCX</small></button>
+        <button class="hub-card" data-tool="excel-pdf"><b>X</b><strong>Excel to PDF</strong><small>Convert spreadsheets</small></button>
+        <button class="hub-card" data-tool="ppt-pdf"><b>P</b><strong>PowerPoint to PDF</strong><small>Convert presentations</small></button>
+        <button class="hub-card" data-tool="html-pdf"><b>&lt;/&gt;</b><strong>HTML to PDF</strong><small>Save a webpage as PDF</small></button>
+        <button class="hub-card" data-tool="text-pdf"><b>T</b><strong>Text to PDF</strong><small>Create a simple PDF</small></button>
+        <button class="hub-card" data-tool="web-pdf"><b>◎</b><strong>Webpage to PDF</strong><small>Capture a web page</small></button>
+      </div>
+    </div>
+
+    <div class="hub-category" data-category="create">
+      <div class="hub-title"><h2>Create</h2><span>Simple design tools</span></div>
+      <div class="hub-grid">
+        <button class="hub-card" data-start="blank"><b>＋</b><strong>Blank design</strong><small>Start from scratch</small></button>
+        <button class="hub-card" data-start="poster"><b>▣</b><strong>Poster</strong><small>Make a poster</small></button>
+        <button class="hub-card" data-start="social"><b>▤</b><strong>Social post</strong><small>Make a square design</small></button>
+        <button class="hub-card" data-start="image"><b>▧</b><strong>Image editor</strong><small>Open an image on canvas</small></button>
+        <button class="hub-card" data-tool="qr"><b>▦</b><strong>QR Code</strong><small>Create a QR code</small></button>
+        <button class="hub-card" data-tool="barcode"><b>|||</b><strong>Barcode</strong><small>Create a barcode</small></button>
+        <button class="hub-card" data-tool="scanner"><b>▣</b><strong>Camera Scanner</strong><small>Scan pages with a camera</small></button>
+        <button class="hub-card" data-tool="signature"><b>✎</b><strong>Signature</strong><small>Create a reusable signature</small></button>
+      </div>
+    </div>
+
+    <div class="hub-bottom">
+      <button id="startOpenButton" class="secondary-start">↑ Import project</button>
+      <button id="continueButton" class="secondary-start">↻ Continue last work</button>
+    </div>
+    <input id="welcomeFileInput" type="file" accept="application/json,.json" hidden>
+  </div>
+</section>
+
+  
+<div id="toolModal" class="tool-modal" hidden role="dialog" aria-modal="true" aria-labelledby="toolTitle">
+  <div class="tool-dialog">
+    <button id="toolClose" class="tool-close" type="button" aria-label="Close tool">×</button>
+    <p class="eyebrow" id="toolCategory">Tool</p>
+    <h2 id="toolTitle">Tool</h2>
+    <p id="toolDescription" class="tool-description"></p>
+    <div id="toolBody"></div>
+  </div>
+</div>
+<header class="topbar">
+    <button id="menuButton" class="icon-button mobile-only" aria-label="Open tools">
+      ☰
+    </button>
+
+    <a class="brand" href="#" aria-label="CanvasFlow home">
+      Canvas<span>Flow</span>
+    </a>
+
+    <div
+      id="documentName"
+      class="document-name"
+      contenteditable="true"
+      role="textbox"
+      aria-label="Document name"
+      spellcheck="false"
+    >
+      Untitled canvas
+    </div>
+
+    <div class="topbar-actions">
+      <button id="undoButton" class="text-button" title="Undo Ctrl+Z">
+        Undo
+      </button>
+
+      <button id="redoButton" class="text-button" title="Redo Ctrl+Y">
+        Redo
+      </button>
+
+      <button id="themeButton" class="text-button">
+        Theme
+      </button>
+
+      <button id="saveButton" class="primary-button">Save</button>
+      <button id="topExportButton" class="primary-button">Export</button>
+    </div>
+  </header>
+
+  <main class="application">
+    <aside id="toolsPanel" class="panel tools-panel" aria-label="Tools">
+      <div class="panel-heading">
+        <div>
+          <p class="eyebrow">Workspace</p>
+          <h2>Tools</h2>
+        </div>
+
+        <button id="closeToolsButton" class="icon-button mobile-only" aria-label="Close tools">
+          ×
+        </button>
+      </div>
+
+      <div class="tool-list">
+        <button class="tool-button active" data-tool="select">
+          <span class="tool-icon">↖</span>
+          <span>Select</span>
+          <kbd>V</kbd>
+        </button>
+
+        <button class="tool-button" data-tool="rectangle">
+          <span class="tool-icon">□</span>
+          <span>Shape</span>
+          <kbd>R</kbd>
+        </button>
+
+        <button class="tool-button" data-tool="ellipse">
+          <span class="tool-icon">○</span>
+          <span>Circle</span>
+          <kbd>E</kbd>
+        </button>
+
+        <button class="tool-button" data-tool="text">
+          <span class="tool-icon">T</span>
+          <span>Text</span>
+          <kbd>T</kbd>
+        </button>
+
+        <button class="tool-button" data-tool="draw">
+          <span class="tool-icon">✎</span>
+          <span>Draw</span>
+          <kbd>D</kbd>
+        </button>
+
+        <button class="tool-button" data-tool="erase">
+          <span class="tool-icon">⌫</span>
+          <span>Delete</span>
+          <kbd>⌫</kbd>
+        </button>
+      </div>
+
+      <div class="panel-divider"></div>
+
+      <div class="tool-list secondary-tools">
+        <button id="clearButton" class="tool-button">
+          <span class="tool-icon">✕</span>
+          <span>Clear canvas</span>
+        </button>
+
+        <button id="importButton" class="tool-button">
+          <span class="tool-icon">⇧</span>
+          <span>Import JSON</span>
+        </button>
+
+        <button id="exportButton" class="tool-button">
+          <span class="tool-icon">⇩</span>
+          <span>Export project</span>
+        </button>
+
+        <button id="pngButton" class="tool-button">
+          <span class="tool-icon">▣</span>
+          <span>Export PNG</span>
+        </button>
+      </div>
+
+      <input id="fileInput" type="file" accept="application/json" hidden>
+
+      <div class="tools-footer">
+        <span class="status-dot"></span>
+        <span>Saved locally</span>
+      </div>
+    </aside>
+
+    <section class="workspace" aria-label="Canvas workspace">
+      <div class="canvas-toolbar">
+        <div class="toolbar-group">
+          <label class="zoom-control">
+            <span>Zoom</span>
+            <input id="zoomRange" type="range" min="40" max="160" value="100">
+            <output id="zoomOutput">100%</output>
+          </label>
+        </div>
+
+        <div class="toolbar-divider"></div>
+
+        <p id="canvasHint" class="canvas-hint">
+          Choose a tool, then click and drag on the canvas.
+        </p>
+
+        <div class="toolbar-spacer"></div>
+
+        <button id="fitButton" class="small-button">
+          Fit
+        </button>
+      </div>
+
+      <div id="canvasViewport" class="canvas-viewport">
+        <canvas
+          id="editorCanvas"
+          width="1200"
+          height="760"
+          aria-label="Editable drawing canvas"
+        ></canvas>
+      </div>
+    </section>
+
+    <aside id="propertiesPanel" class="panel properties-panel" aria-label="Properties">
+      <div class="panel-heading">
+        <div>
+          <p class="eyebrow">Inspector</p>
+          <h2>Properties</h2>
+        </div>
+
+        <button id="closePropertiesButton" class="icon-button mobile-only" aria-label="Close properties">
+          ×
+        </button>
+      </div>
+
+      <div id="emptyProperties" class="empty-properties">
+        <div class="empty-icon">◈</div>
+        <p>Select an object to edit its properties.</p>
+      </div>
+
+      <form id="propertiesForm" class="properties-form" hidden>
+        <label class="field">
+          <span>Fill color</span>
+          <input id="fillInput" type="color" value="#dbeafe">
+        </label>
+
+        <label class="field">
+          <span>Stroke color</span>
+          <input id="strokeInput" type="color" value="#4f46e5">
+        </label>
+
+        <label class="field">
+          <span>
+            Stroke width
+            <output id="strokeWidthOutput">2</output>
+          </span>
+          <input id="strokeWidthInput" type="range" min="0" max="20" value="2">
+        </label>
+
+        <label class="field">
+          <span>
+            Opacity
+            <output id="opacityOutput">1</output>
+          </span>
+          <input id="opacityInput" type="range" min="0.1" max="1" step="0.1" value="1">
+        </label>
+
+        <label class="field">
+          <span>Text</span>
+          <textarea id="textInput" rows="4" placeholder="Text content"></textarea>
+        </label>
+
+        <button id="deleteButton" type="button" class="danger-button">
+          Delete selected
+        </button>
+      </form>
+    </aside>
+  </main>
+
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+<script type="module" src="js/app.js"></script>
+<script>
+(() => {
+ const modal=document.getElementById("toolModal"); modal.hidden=true; const title=document.getElementById("toolTitle"), desc=document.getElementById("toolDescription"), body=document.getElementById("toolBody"), close=document.getElementById("toolClose");
+ const cards=[...document.querySelectorAll(".hub-card")], cats=[...document.querySelectorAll(".hub-category")], tabs=[...document.querySelectorAll(".hub-tab")], search=document.getElementById("toolSearch");
+ const toolInfo={
+  "merge-pdf":["PDF","Merge PDF","Combine multiple PDF files into one file."],
+  "split-pdf":["PDF","Split PDF","Split a PDF into separate files or page ranges."],
+  "compress-pdf":["PDF","Compress PDF","Reduce PDF file size while keeping useful quality."],
+  "pdf-images":["PDF","PDF to Images","Turn PDF pages into image files."],
+  "images-pdf":["PDF","Images to PDF","Put multiple images into one PDF and reorder them."],
+  "ocr":["PDF","OCR","Recognize text in scanned documents and images. Requires a processing engine."],
+  "sign-pdf":["PDF","Sign PDF","Place a signature on a PDF. Requires a processing engine."],
+  "protect-pdf":["PDF","Protect PDF","Add a password to a PDF. Requires a processing engine."],
+  "rotate-pdf":["PDF","Rotate PDF","Fix page orientation. Requires a processing engine."],
+  "extract-pdf":["PDF","Extract Pages","Save selected PDF pages separately. Requires a processing engine."],
+  "watermark-pdf":["PDF","Watermark PDF","Add a text or image watermark. Requires a processing engine."],
+  "pdf-to-word":["PDF","PDF to Word","Convert PDF content to an editable document. Requires a processing engine."],
+  "compress-image":["Images","Compress Image","Reduce image file size."],
+  "resize-image":["Images","Resize Image","Change image dimensions."],
+  "crop-image":["Images","Crop Image","Crop an image to the exact frame you need."],
+  "rotate-image":["Images","Rotate Image","Rotate an image by 90, 180 or 270 degrees."],
+  "flip-image":["Images","Flip Image","Mirror an image horizontally or vertically."],
+  "remove-bg":["Images","Remove Background","Prepare a subject with its background removed. Requires a processing engine."],
+  "watermark-image":["Images","Watermark Image","Add text branding to an image."],
+  "grayscale":["Images","Grayscale","Create a black-and-white image."],
+  "blur-image":["Images","Blur Image","Apply a simple blur effect."],
+  "metadata":["Images","Image Information","See file type, dimensions and size."],
+  "image-pdf":["Images","Image to PDF","Create a PDF from one or more images. Requires a processing engine."],
+  "word-pdf":["Documents","Word to PDF","Convert Word documents to PDF. Requires a processing engine."],
+  "excel-pdf":["Documents","Excel to PDF","Convert spreadsheets to PDF. Requires a processing engine."],
+  "ppt-pdf":["Documents","PowerPoint to PDF","Convert presentations to PDF. Requires a processing engine."],
+  "html-pdf":["Documents","HTML to PDF","Create a PDF from HTML content. Requires a processing engine."],
+  "text-pdf":["Documents","Text to PDF","Create a PDF from text. Requires a processing engine."],
+  "web-pdf":["Documents","Webpage to PDF","Create a printable PDF from a webpage. Requires a processing engine."],
+  "qr":["Create","QR Code","Create a QR code from text or a URL."],
+  "barcode":["Create","Barcode","Create a simple barcode."],
+  "scanner":["Create","Camera Scanner","Use your camera to capture document pages."],
+  "signature":["Create","Signature","Create a reusable signature image."],
+ };
+ function openTool(id){
+  lastFocused=document.activeElement;
+  if(id==="image-converter"){openImageConverter();return;}
+  const x=toolInfo[id]||["Tool","Tool","This tool will be connected to the processing engine."];
+  title.textContent=x[1];desc.textContent=x[2];document.getElementById("toolCategory").textContent=x[0];
+  body.innerHTML='<div class="drop-zone" id="genericDrop">Drop files here<br><button class="tool-primary" id="chooseGeneric">Choose files</button></div><div class="tool-note">The interface is ready for this workflow. Processing engines will be connected tool-by-tool without changing the simple interface.</div>';
+  modal.hidden=false;
+  document.getElementById("chooseGeneric").onclick=()=>{const i=document.createElement("input");i.type="file";i.multiple=true;i.onchange=()=>renderGenericFiles(i.files);i.click()};
+ }
+ function renderGenericFiles(files){document.getElementById("genericDrop").innerHTML='<b>'+files.length+' file(s) selected</b><div class="tool-files">'+[...files].map(f=>'<div class="tool-file"><span>'+escapeHtml(f.name)+'</span><span>'+formatBytes(f.size)+'</span></div>').join("")+'</div><button class="tool-primary" disabled>Process</button><div class="tool-note">File processing will be connected to the selected tool engine.</div>'}
+ function openImageConverter(){
+  lastFocused=document.activeElement;
+  document.getElementById("toolCategory").textContent="Images";
+  title.textContent="Image Converter";desc.textContent="Convert images between common formats with batch support.";
+  body.innerHTML=`<div class="drop-zone" id="imageDrop">Drop images here<br><button class="tool-primary" id="imageChoose">Choose images</button><div class="tool-note">JPG/JPEG, PNG, WebP, GIF, BMP, TIFF, SVG, ICO, AVIF, HEIC/HEIF, APNG and other formats can be selected. Actual decoding depends on browser support.</div></div><div id="imageFiles" class="tool-files"></div><div class="tool-row"><label>Convert to <select id="imageOut"><option>PNG</option><option>JPEG</option><option>WebP</option><option>BMP</option><option>GIF</option><option>AVIF</option></select></label><label>Quality <input id="imageQuality" type="range" min="10" max="100" value="90"></label></div><button class="tool-primary" id="convertImages" disabled>Convert all</button><div id="imageResult"></div>`;
+  modal.hidden=false;
+  let files=[];
+  const input=document.createElement("input");input.type="file";input.multiple=true;input.hidden=true;input.accept="image/*,.jpg,.jpeg,.png,.webp,.gif,.bmp,.tif,.tiff,.svg,.ico,.avif,.heic,.heif,.apng";input.id="hiddenImageInput";
+  document.body.appendChild(input);
+  document.getElementById("imageChoose").onclick=()=>input.click();
+  const drop=document.getElementById("imageDrop");
+  ["dragenter","dragover"].forEach(e=>drop.addEventListener(e,x=>{x.preventDefault();drop.classList.add("drag")}));
+  ["dragleave","drop"].forEach(e=>drop.addEventListener(e,x=>{x.preventDefault();drop.classList.remove("drag")}));
+  drop.addEventListener("drop",e=>{files=[...e.dataTransfer.files];show()});
+  input.onchange=()=>{files=[...input.files];show()};
+  function show(){document.getElementById("imageFiles").innerHTML=files.map(f=>'<div class="tool-file"><span>'+escapeHtml(f.name)+'</span><span>'+formatBytes(f.size)+'</span></div>').join("");document.getElementById("convertImages").disabled=!files.length}
+  document.getElementById("convertImages").onclick=async()=>{const out=document.getElementById("imageOut").value.toLowerCase();const q=+document.getElementById("imageQuality").value/100;let done=0,failed=0;const links=[];
+   for(const f of files){try{const img=await loadImage(f);const c=document.createElement("canvas");c.width=img.naturalWidth;c.height=img.naturalHeight;c.getContext("2d").drawImage(img,0,0);const mime=out==="jpeg"?"image/jpeg":out==="webp"?"image/webp":out==="bmp"?"image/bmp":out==="gif"?"image/gif":out==="avif"?"image/avif":"image/png";const blob=await new Promise(r=>c.toBlob(r,mime,q));if(!blob)throw 0;links.push({name:f.name.replace(/\.[^.]+$/,"")+"."+out.replace("jpeg","jpg"),url:URL.createObjectURL(blob)});done++}catch(e){failed++}}
+   document.getElementById("imageResult").innerHTML='<div class="tool-result"><b>'+done+' converted</b>'+(failed?' · '+failed+' could not be decoded/encoded by this browser':'')+'<br>'+links.map(x=>'<a class="tool-download" download="'+escapeHtml(x.name)+'" href="'+x.url+'">Download '+escapeHtml(x.name)+'</a>').join("<br>")+'</div>';
+  };
+ }
+ function loadImage(file){return new Promise((res,rej)=>{const u=URL.createObjectURL(file),i=new Image();i.onload=()=>{URL.revokeObjectURL(u);res(i)};i.onerror=()=>{URL.revokeObjectURL(u);rej()};i.src=u})}
+ function formatBytes(n){if(n<1024)return n+" B";if(n<1048576)return (n/1024).toFixed(1)+" KB";return (n/1048576).toFixed(1)+" MB"}
+ function escapeHtml(s){return s.replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]))}
+ let lastFocused = null;
+ function closeModal(){ modal.hidden=true; if(lastFocused && typeof lastFocused.focus === "function") lastFocused.focus(); lastFocused=null; }
+ close.onclick=closeModal;
+ modal.addEventListener("click",e=>{if(e.target===modal)closeModal()});
+ document.addEventListener("keydown",e=>{if(e.key==="Escape" && !modal.hidden) closeModal()});
+ cards.forEach(c=>c.dataset.tool&&c.addEventListener("click",()=>openTool(c.dataset.tool)));
+ tabs.forEach(t=>t.onclick=()=>{tabs.forEach(x=>x.classList.remove("active"));t.classList.add("active");const f=t.dataset.filter;cats.forEach(c=>c.classList.toggle("filtered-out",f!=="all"&&c.dataset.category!==f))});
+ search?.addEventListener("input",()=>{const q=search.value.toLowerCase().trim();tabs.forEach(x=>x.classList.remove("active"));cats.forEach(c=>{let n=0;c.querySelectorAll(".hub-card").forEach(card=>{const ok=!q||card.textContent.toLowerCase().includes(q);card.classList.toggle("filtered-out",!ok);if(ok)n++});c.classList.toggle("filtered-out",n===0)})});
+})();
+</script></body>
+</html>
