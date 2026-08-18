@@ -1,0 +1,189 @@
+@media (max-width: 1080px) {
+  .application {
+    grid-template-columns: 196px minmax(0, 1fr) 230px;
+  }
+
+  .topbar {
+    gap: 12px;
+    padding-inline: 16px;
+  }
+
+  .document-name {
+    min-width: 150px;
+  }
+
+  .canvas-viewport {
+    padding: 24px;
+  }
+}
+
+@media (max-width: 860px) {
+  .application {
+    grid-template-columns: 188px minmax(0, 1fr);
+  }
+
+  .properties-panel {
+    position: fixed;
+    right: 14px;
+    bottom: 14px;
+    width: min(300px, calc(100vw - 28px));
+    max-height: min(520px, calc(100vh - 100px));
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    box-shadow: var(--shadow);
+  }
+
+  .canvas-hint {
+    display: none;
+  }
+
+  .mobile-only {
+    display: inline-grid;
+  }
+}
+
+@media (max-width: 640px) {
+  :root {
+    --topbar-height: 58px;
+  }
+
+  body {
+    overflow: hidden;
+  }
+
+  .topbar {
+    gap: 8px;
+    height: var(--topbar-height);
+    padding: 0 10px;
+  }
+
+  .mobile-only {
+    display: inline-grid;
+  }
+
+  .brand {
+    font-size: 17px;
+  }
+
+  .document-name {
+    min-width: 0;
+    flex: 1;
+    padding-inline: 7px;
+    font-size: 13px;
+  }
+
+  .topbar-actions {
+    gap: 3px;
+  }
+
+  .topbar-actions .text-button {
+    display: none;
+  }
+
+  .topbar-actions .primary-button {
+    padding: 9px 12px;
+  }
+
+  .application {
+    display: block;
+    height: calc(100vh - var(--topbar-height));
+  }
+
+  .tools-panel {
+    position: fixed;
+    z-index: 30;
+    top: var(--topbar-height);
+    bottom: 0;
+    left: 0;
+    width: min(250px, 82vw);
+    border-right: 1px solid var(--border);
+    box-shadow: var(--shadow);
+    transform: translateX(-105%);
+    transition: transform 180ms ease;
+  }
+
+  .tools-panel.open {
+    transform: translateX(0);
+  }
+
+  .properties-panel {
+    right: 10px;
+    bottom: 10px;
+    width: calc(100vw - 20px);
+    max-height: min(480px, calc(100vh - 90px));
+  }
+
+  .canvas-toolbar {
+    min-height: 50px;
+    gap: 9px;
+    padding: 7px 10px;
+  }
+
+  .zoom-control {
+    gap: 5px;
+    font-size: 11px;
+  }
+
+  .zoom-control input {
+    width: 82px;
+  }
+
+  .small-button {
+    padding: 8px;
+    font-size: 11px;
+  }
+
+  .canvas-viewport {
+    padding: 16px 10px;
+  }
+
+  #editorCanvas {
+    width: 100%;
+  }
+}
+
+@media (orientation: landscape) and (max-width: 760px) {
+  .properties-panel {
+    width: 280px;
+    max-height: calc(100vh - 78px);
+  }
+}
+
+
+
+/* Second-pass stability fixes */
+@media (max-width: 860px) {
+  .properties-panel {
+    visibility: hidden;
+    pointer-events: none;
+    transform: translateY(12px);
+    opacity: 0;
+    transition: opacity 160ms ease, transform 160ms ease, visibility 160ms ease;
+  }
+
+  .properties-panel.open {
+    visibility: visible;
+    pointer-events: auto;
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@media (max-width: 640px) {
+  .topbar-actions .primary-button {
+    min-height: 40px;
+  }
+
+  .canvas-toolbar {
+    overflow-x: auto;
+    flex-wrap: nowrap;
+  }
+
+  .zoom-control input {
+    flex: 0 0 82px;
+  }
+
+  .canvas-viewport {
+    overscroll-behavior: contain;
+  }
+}
